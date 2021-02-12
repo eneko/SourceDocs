@@ -9,13 +9,15 @@ import Foundation
 import SourceKittenFramework
 import MarkdownGenerator
 
-struct MarkdownTypealias: SwiftDocDictionaryInitializable, MarkdownConvertible {
+struct MarkdownTypealias: SwiftDocDictionaryInitializable, MarkdownConvertible, MarkdownReportable {
     let dictionary: SwiftDocDictionary
     let options: MarkdownOptions
 
     init?(dictionary: SwiftDocDictionary) {
         fatalError("Not supported")
     }
+
+    let reportingChildren: [[MarkdownReportable]]? = nil
 
     init?(dictionary: SwiftDocDictionary, options: MarkdownOptions) {
         guard dictionary.accessLevel >= options.minimumAccessLevel && dictionary.isKind([.typealias]) else {
@@ -36,4 +38,5 @@ struct MarkdownTypealias: SwiftDocDictionaryInitializable, MarkdownConvertible {
         \(comment)
         """
     }
+
 }

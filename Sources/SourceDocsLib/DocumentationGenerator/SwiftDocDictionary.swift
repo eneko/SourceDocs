@@ -33,6 +33,31 @@ extension Dictionary where Key == String, Value == Any {
     }
 }
 
+protocol MarkdownReportable: SwiftDocDictionaryInitializable {
+    var reportingChildren: [[MarkdownReportable]]? { get }
+}
+
+extension MarkdownReportable {
+
+    func report (whereAccessLevel accessLevel: AccessLevel) -> MarkdownReport {
+        guard self.dictionary.accessLevel.priority >= accessLevel.priority else {
+            return MarkdownReport(total: 0, processed: 0)
+        }
+
+        var report = MarkdownReport(total: 1, processed: self.isReporting ? 1 : 0)
+
+        guard let children = self.reportingChildren else {
+            return report
+        }
+
+        report = children.flatMap { $0 }.map {
+            $0.report(whereAccessLevel: accessLevel)
+        }.reduce(report, +)
+
+        return report
+    }
+}
+
 protocol SwiftDocDictionaryInitializable {
     var dictionary: SwiftDocDictionary { get }
 
@@ -65,5 +90,9 @@ extension SwiftDocDictionaryInitializable {
         \(title)
         \(collection.markdown)
         """
+    }
+
+    var isReporting: Bool {
+        return self.dictionary[SwiftDocKey.documentationComment.rawValue] != nil
     }
 }

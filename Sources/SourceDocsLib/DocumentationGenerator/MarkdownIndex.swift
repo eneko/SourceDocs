@@ -34,6 +34,40 @@ class MarkdownIndex {
         methods = []
     }
 
+    func report(
+        to docsPath: String,
+        linkBeginningText: String,
+        linkEndingText: String,
+        options: DocumentOptions
+    ) throws -> MarkdownReport {
+        var report = MarkdownReport(total: 0, processed: 0)
+        extensions = flattenedExtensions()
+
+        fputs("Generating Markdown report...\n".green, stdout)
+        report = protocols.map { $0.report(whereAccessLevel: options.minimumAccessLevel) }
+            .reduce(report, +)
+
+        report = structs.map { $0.report(whereAccessLevel: options.minimumAccessLevel) }
+            .reduce(report, +)
+
+        report = classes.map { $0.report(whereAccessLevel: options.minimumAccessLevel) }
+            .reduce(report, +)
+
+        report = enums.map { $0.report(whereAccessLevel: options.minimumAccessLevel) }
+            .reduce(report, +)
+
+        report = extensions.map { $0.report(whereAccessLevel: options.minimumAccessLevel) }
+            .reduce(report, +)
+
+        report = typealiases.map { $0.report(whereAccessLevel: options.minimumAccessLevel) }
+            .reduce(report, +)
+
+        report = methods.map { $0.report(whereAccessLevel: options.minimumAccessLevel) }
+            .reduce(report, +)
+
+        return report
+    }
+
     func write(
         to docsPath: String,
         linkBeginningText: String,

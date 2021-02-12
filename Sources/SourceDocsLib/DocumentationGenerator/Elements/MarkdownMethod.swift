@@ -9,11 +9,12 @@ import Foundation
 import SourceKittenFramework
 import MarkdownGenerator
 
-struct MarkdownMethod: SwiftDocDictionaryInitializable, MarkdownConvertible {
+struct MarkdownMethod: SwiftDocDictionaryInitializable, MarkdownConvertible, MarkdownReportable {
     let dictionary: SwiftDocDictionary
     let options: MarkdownOptions
 
     let parameters: [MarkdownMethodParameter]
+    let reportingChildren: [[MarkdownReportable]]? = nil
 
     init?(dictionary: SwiftDocDictionary) {
         fatalError("Not supported")
@@ -69,6 +70,7 @@ struct MarkdownMethod: SwiftDocDictionaryInitializable, MarkdownConvertible {
             """
         }
     }
+
 }
 
 struct MarkdownMethodParameter: SwiftDocDictionaryInitializable {
